@@ -1,4 +1,5 @@
 "use client";
+import ErrorMessage from "@/app/components/ErrorMessage";
 import { createIssueSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Callout, Text, TextArea, TextField } from "@radix-ui/themes";
@@ -21,6 +22,15 @@ export default function NewIssuePage() {
   });
   const [error, setError] = useState("");
 
+  const handleSubmitForm = async (data: IssueForm) => {
+    try {
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+    } catch (error) {
+      setError("Something went wrong");
+    }
+  };
+
   return (
     <div className="max-w-xl">
       {error && (
@@ -30,30 +40,14 @@ export default function NewIssuePage() {
       )}
       <form
         className="max-w-xl space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-          } catch (error) {
-            setError("Something went wrong");
-          }
-        })}
+        onSubmit={handleSubmit(handleSubmitForm)}
       >
-        <TextField.Root
-          placeholder="Title"
-          {...register("title")}
-        ></TextField.Root>
-        {errors.title && (
-          <Text color="red" as="p">
-            {errors.title.message}
-          </Text>
-        )}
+        <TextField.Root placeholder="Title" {...register("title")} />
+        <ErrorMessage>{errors.title?.message}</ErrorMessage>
+
         <TextArea placeholder="Description" {...register("description")} />
-        {errors.description && (
-          <Text color="red" as="p">
-            {errors.description.message}
-          </Text>
-        )}
+        <ErrorMessage>{errors.description?.message}</ErrorMessage>
+
         <Button>Submit New Issue</Button>
       </form>
     </div>
