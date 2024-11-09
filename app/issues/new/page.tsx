@@ -1,8 +1,9 @@
 "use client";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/Spinner";
 import { createIssueSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Callout, Text, TextArea, TextField } from "@radix-ui/themes";
+import { Button, Callout, TextArea, TextField } from "@radix-ui/themes";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,20 +17,20 @@ export default function NewIssuePage() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema),
   });
   const [error, setError] = useState("");
 
-  const handleSubmitForm = async (data: IssueForm) => {
+  const handleSubmitForm = handleSubmit(async (data: IssueForm) => {
     try {
       await axios.post("/api/issues", data);
       router.push("/issues");
     } catch (error) {
       setError("Something went wrong");
     }
-  };
+  });
 
   return (
     <div className="max-w-xl">
@@ -38,17 +39,16 @@ export default function NewIssuePage() {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="max-w-xl space-y-3"
-        onSubmit={handleSubmit(handleSubmitForm)}
-      >
+      <form className="max-w-xl space-y-3" onSubmit={handleSubmitForm}>
         <TextField.Root placeholder="Title" {...register("title")} />
         <ErrorMessage>{errors.title?.message}</ErrorMessage>
 
         <TextArea placeholder="Description" {...register("description")} />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
-        <Button>Submit New Issue</Button>
+        <Button disabled={isSubmitting}>
+          Submit New Issue {isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );
