@@ -28,7 +28,7 @@ export default async function IssueDetailPage({ params }: Props) {
           {issue.createdAt.toDateString()}
         </Text>
       </Flex>
-      <Card className="prose dark:prose-invert mt-4">
+      <Card className="prose mt-4 dark:prose-invert">
         <ReatMarkdown>{issue.description}</ReatMarkdown>
       </Card>
     </div>
