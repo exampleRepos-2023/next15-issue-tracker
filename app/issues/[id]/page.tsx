@@ -1,8 +1,8 @@
-import IssueStatusBadge from "@/app/components/IssueStatusBadge";
+import { IssueStatusBadge } from "@/app/components";
 import prisma from "@/prisma/client";
 import { Card, Flex, Heading, Text } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
-import ReatMarkdown from "react-markdown";
+import ReactMarkdown from "react-markdown";
 
 interface Props {
   params: {
@@ -29,7 +29,7 @@ export default async function IssueDetailPage({ params }: Props) {
         </Text>
       </Flex>
       <Card className="prose mt-4 dark:prose-invert">
-        <ReatMarkdown>{issue.description}</ReatMarkdown>
+        <ReactMarkdown>{issue.description}</ReactMarkdown>
       </Card>
     </div>
   );
