@@ -1,8 +1,11 @@
+import { issueSchema } from "@/app/validationSchemas";
 import prisma from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { issueSchema } from "../../validationSchemas";
 
-export const POST = async (request: NextRequest) => {
+export default async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
   const body = await request.json();
   const validation = issueSchema.safeParse(body);
 
@@ -12,12 +15,18 @@ export const POST = async (request: NextRequest) => {
       { status: 400 },
     );
 
-  const newIssue = await prisma.issue.create({
+  const updatedIssue = await prisma.issue.update({
+    where: {
+      id: Number(params.id),
+    },
     data: {
       title: validation.data.title,
       description: validation.data.description,
     },
   });
 
-  return NextResponse.json(newIssue, { status: 201 });
-};
+  if (!updatedIssue)
+    return NextResponse.json({ error: "Issue not found" }, { status: 404 });
+
+  return NextResponse.json(updatedIssue, { status: 200 });
+}
