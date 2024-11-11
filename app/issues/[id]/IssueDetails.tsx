@@ -16,7 +16,6 @@ export default function IssueDetails({ issue }: { issue: Issue }) {
       <Card className="prose mt-4 dark:prose-invert">
         <ReactMarkdown>{issue.description}</ReactMarkdown>
       </Card>
-      ;
     </>
   );
 }
