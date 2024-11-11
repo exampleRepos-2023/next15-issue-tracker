@@ -4,6 +4,8 @@ import { Table } from "@radix-ui/themes";
 import delay from "delay";
 import IssueActions from "./IssueActions";
 
+export const dynamic = "force-dynamic";
+
 export default async function IssuesPage() {
   const issues = await prisma.issue.findMany();
 
