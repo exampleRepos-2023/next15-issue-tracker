@@ -2,10 +2,10 @@ import { issueSchema } from "@/app/validationSchemas";
 import prisma from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export default async function PATCH(
+export const PATCH = async (
   request: NextRequest,
   { params }: { params: { id: string } },
-) {
+) => {
   const body = await request.json();
   const validation = issueSchema.safeParse(body);
 
@@ -29,4 +29,4 @@ export default async function PATCH(
     return NextResponse.json({ error: "Issue not found" }, { status: 404 });
 
   return NextResponse.json(updatedIssue, { status: 200 });
-}
+};
